@@ -8,10 +8,12 @@ import {
   ScrollView,
   AsyncStorage,
   Alert,
+  Dimensions,
 } from 'react-native';
+import HTML from 'react-native-render-html';
 import moment from 'moment';
 import { Linking } from 'expo';
-import { removeTags, calcSize } from '../../utils/Misc';
+import { calcSize } from '../../utils/Misc';
 import Button from '../../components/Button';
 import DataContext from '../../context/DataContext';
 
@@ -100,14 +102,21 @@ export default function EventSingleScreen(props: EventSingleScreenParams) {
           </View>
           <View style={styles.hr} />
           <View style={styles.descriptionContainer}>
-            <Text style={styles.summary}>{event.summary}</Text>
-            <Text style={styles.description}>
-              {removeTags(event.description)}
-            </Text>
+            <View>
+              <Text style={styles.summary}>{event.summary}</Text>
+            </View>
+            <ScrollView style={styles.description}>
+              <HTML
+                html={event.description}
+                imagesMaxWidth={Dimensions.get('window').width}
+              />
+            </ScrollView>
             {event.name && (
-              <Text style={styles.description}>
-                {`Организатор мероприятия:\n${event.name}`}
-              </Text>
+              <View>
+                <Text style={styles.description}>
+                  {`Организатор мероприятия:\n${event.name}`}
+                </Text>
+              </View>
             )}
           </View>
           {event.isOnline && (
@@ -270,6 +279,7 @@ const styles = StyleSheet.create({
     color: '#404040',
   },
   description: {
+    flex: 1,
     marginTop: 20,
     color: '#404040',
   },
